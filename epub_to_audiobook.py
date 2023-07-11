@@ -127,7 +127,7 @@ def translate_to_chinese(text: str) -> str:
         # Make a request to the DeepL API with the text
         response = requests.post(
             DEEPL_API_URL,
-            data={
+            json={
                 'text': text,
                 'target_lang': 'ZH'
             }
