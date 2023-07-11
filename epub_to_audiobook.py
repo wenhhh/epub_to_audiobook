@@ -152,7 +152,6 @@ def translate_to_chinese(text: str) -> str:
 
 def text_to_speech(session: requests.Session, text: str, output_file: str, voice_name: str, language: str, access_token: AccessToken, title: str, author: str, book_title: str, idx: int) -> AccessToken:
     # Translate the text to Chinese before converting to speech
-    text = translate_to_chinese(text)
     # Adjust this value based on your testing
     max_chars = 1800 if language.startswith("zh") else 3000
 
@@ -162,6 +161,7 @@ def text_to_speech(session: requests.Session, text: str, output_file: str, voice
 
     for i, chunk in enumerate(text_chunks, 1):
         escaped_text = html.escape(chunk)
+        escaped_text = translate_to_chinese(escaped_text)
         logger.info(
             f"Processing chapter-{idx} <{title}>, chunk {i} of {len(text_chunks)}")
         ssml = f"<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='{language}'><voice name='{voice_name}'>{escaped_text}</voice></speak>"
