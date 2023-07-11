@@ -13,6 +13,7 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import TIT2, TPE1, TALB, TRCK
 import logging
 from time import sleep
+import json  # import json for DeepL API response processing
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s [%(levelname)s] %(message)s',
