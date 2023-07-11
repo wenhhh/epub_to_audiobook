@@ -135,7 +135,7 @@ def translate_to_chinese(text: str) -> str:
     response_data = json.loads(response.text)
 
     # Get the translated text
-    translated_text = response_data['data']
+    translated_text = response_data.get('data', text) or text
 
     return translated_text
 
