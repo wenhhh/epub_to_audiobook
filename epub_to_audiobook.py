@@ -123,14 +123,25 @@ def split_text(text: str, max_chars: int, language: str) -> List[str]:
 # Add function to call DeepL API for translation
 def translate_to_chinese(text: str) -> str:
     # Make a request to the DeepL API with the text
-    response = requests.post(
-        DEEPL_API_URL,
-        data={
-            'text': text,
-            'target_lang': 'ZH'
-        }
-    )
+    try:
+        # Make a request to the DeepL API with the text
+        response = requests.post(
+            DEEPL_API_URL,
+            data={
+                'auth_key': 'your-auth-key',  # replace with your auth key
+                'text': text,
+                'target_lang': 'ZH'
+            }
+        )
 
+        # Raise an exception if the request was unsuccessful
+        response.raise_for_status()
+
+    except requests.exceptions.RequestException as e:
+        # Log the error and return the original text
+        logger.error(f"Error when requesting translation: {e}")
+        return text
+      
     # Parse the JSON response
     response_data = json.loads(response.text)
 
