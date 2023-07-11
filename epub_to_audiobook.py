@@ -128,7 +128,6 @@ def translate_to_chinese(text: str) -> str:
         response = requests.post(
             DEEPL_API_URL,
             data={
-                'auth_key': 'your-auth-key',  # replace with your auth key
                 'text': text,
                 'target_lang': 'ZH'
             }
@@ -139,6 +138,7 @@ def translate_to_chinese(text: str) -> str:
 
     except requests.exceptions.RequestException as e:
         # Log the error and return the original text
+        logger.info(f"text is {text}")
         logger.error(f"Error when requesting translation: {e}")
         return text
       
