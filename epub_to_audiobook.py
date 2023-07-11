@@ -37,6 +37,8 @@ TOKEN_HEADERS = {
 
 TTS_URL = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
 
+# Define DeepL API URL
+DEEPL_API_URL = os.environ.get("DEEPL_API_URL")
 
 def sanitize_title(title: str) -> str:
     sanitized_title = re.sub(r"[^\w\s]", "", title, flags=re.UNICODE)
@@ -117,7 +119,28 @@ def split_text(text: str, max_chars: int, language: str) -> List[str]:
     return chunks
 
 
+# Add function to call DeepL API for translation
+def translate_to_chinese(text: str) -> str:
+    # Make a request to the DeepL API with the text
+    response = requests.post(
+        DEEPL_API_URL,
+        data={
+            'text': text,
+            'target_lang': 'ZH'
+        }
+    )
+
+    # Parse the JSON response
+    response_data = json.loads(response.text)
+
+    # Get the translated text
+    translated_text = response_data['data']
+
+    return translated_text
+
 def text_to_speech(session: requests.Session, text: str, output_file: str, voice_name: str, language: str, access_token: AccessToken, title: str, author: str, book_title: str, idx: int) -> AccessToken:
+    # Translate the text to Chinese before converting to speech
+    text = translate_to_chinese(text)
     # Adjust this value based on your testing
     max_chars = 1800 if language.startswith("zh") else 3000
 
@@ -194,6 +217,8 @@ def epub_to_audiobook(input_file: str, output_folder: str, voice_name: str, lang
 
     with requests.Session() as session:
         for idx, (title, text) in enumerate(chapters, start=1):
+            # Translate the title to Chinese
+            title = translate_to_chinese(title)
             if not title:
                 title = text[:60]
             logger.info(f"Raw title: <{title}>")
